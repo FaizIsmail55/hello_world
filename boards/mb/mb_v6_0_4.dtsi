@@ -1,0 +1,10 @@
+
+/* device tree for peripheral devices only use usart 3 500 000 */
+
+&usart3 {
+	//Serving: Logging, and Shell.
+	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
+	current-speed = <500000>;
+	pinctrl-names = "default";
+	status = "okay";
+};

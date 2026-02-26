@@ -1,0 +1,2 @@
+config BOARD_COM_H723ZG
+	select SOC_STM32H723XX

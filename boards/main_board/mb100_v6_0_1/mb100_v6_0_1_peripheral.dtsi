@@ -1,0 +1,310 @@
+
+/*
+ *        Copyright (c) PINGSPACE SDN BHD
+ *        Author: Yi Yun Lau <lau.yi.yun@pingspace.co>
+ *        SPDX-License-Identifier: Apache-2.0
+ *        Peripheral support and configs
+ */
+
+/*uarts start*/
+&usart1 {
+	//Serving: SC - ESP32 Communication
+	pinctrl-0 = <&usart1_tx_pb14 &usart1_rx_pb15>;
+	current-speed = <115200>;
+	dmas = <&dmamux1 2 42 0x440>,
+	       <&dmamux1 1 41 0x480>;
+	pinctrl-names = "default";
+	dma-names = "tx", "rx";
+	status = "okay";
+};
+
+&usart2 {
+	//Serving: SC - ESP32 Boot Flash
+	pinctrl-0 = <&usart2_tx_pa2 &usart2_rx_pa3>;
+	current-speed = <115200>;
+	dmas = <&dmamux1 4 44 0x440>,
+	       <&dmamux1 3 43 0x480>;
+	pinctrl-names = "default";
+	dma-names = "tx", "rx";
+	status = "okay";
+};
+
+&usart3 {
+	//Serving: Logging, and Shell.
+	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
+	current-speed = <500000>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&usart6 {
+	//Serving: Rail QR Scanner
+	pinctrl-0 = <&usart6_tx_pc6 &usart6_rx_pc7>;
+	current-speed = <9600>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&uart7 {
+	//Serving: Scanner A
+	pinctrl-0 = <&uart7_tx_pe8 &uart7_rx_pe7>;
+	current-speed = <9600>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&usart10 {
+	//Serving: Zigbee
+	pinctrl-0 = <&usart10_tx_pe3 &usart10_rx_pe2>;
+	current-speed = <115200>;
+	dmas = <&dmamux1 12 119 0x440>,
+	       <&dmamux1 11 118 0x480>;
+	pinctrl-names = "default";
+	dma-names = "tx", "rx";
+	status = "okay";
+};
+/*uarts end*/
+
+/* i2c start */
+&i2c1 {
+	//Serving: EEPROM
+	pinctrl-0 = <&i2c1_scl_pb8 &i2c1_sda_pb9>;
+	pinctrl-names = "default";
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	// eeprom reg address: 1010 (standard eeprom initial address)
+	// A0: 0, A1: 0, A2: 0: 000
+	// eeprom i2c address: 0b 1010000 (0x50)
+	eeprom_000: eeprom@50 {
+		compatible = "atmel,at24";
+		reg = <0x50>;
+		size = <65536>;
+		pagesize = <32>;
+		address-width = <16>;
+		timeout = <5>;
+	};
+};
+
+&i2c2 {
+	//Serving: Temperature Sensor & IMU Sensor
+	pinctrl-0 = <&i2c2_scl_pb10 &i2c2_sda_pb11>;
+	pinctrl-names = "default";
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+};
+
+&i2c3 {
+	//Serving: IO Expander
+	pinctrl-0 = <&i2c3_scl_pa8 &i2c3_sda_pc9>;
+	pinctrl-names = "default";
+	status = "okay";
+	clock-frequency = <I2C_BITRATE_FAST>;
+
+	mcp23017a: mcp23017a@25 { // Encoder Mux (Outputs)
+		compatible = "microchip,mcp23017";
+		reg = <0x25>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		ngpios = <16>;
+		status = "okay";
+		interrupt-controller;
+		int-gpios = <&gpioc 0 GPIO_ACTIVE_LOW>; /*PC0*/
+		reset-gpios = <&gpioe 10 GPIO_ACTIVE_LOW>; /*PE10*/
+	};
+
+	mcp23017b: mcp23017b@26 { // Panel Switch (Inputs Interrupt)
+		compatible = "microchip,mcp23017";
+		reg = <0x26>;
+		gpio-controller;
+		#gpio-cells = <2>;
+		ngpios = <16>;
+		status = "okay";
+		interrupt-controller;
+		int-gpios = <&gpioa 10 GPIO_ACTIVE_LOW>; /*PA10*/
+		reset-gpios = <&gpioe 12 GPIO_ACTIVE_LOW>; /*PE12*/
+	    };
+};
+/* i2c end */
+
+/* spi start */
+&octospi1 {
+	pinctrl-0 = <&octospim_p1_clk_pf10 &octospim_p1_ncs_pe11
+	&octospim_p1_io0_pd11 &octospim_p1_io1_pd12
+	&octospim_p1_io2_pb13 &octospim_p1_io3_pd13>;
+	pinctrl-names = "default";
+	status = "okay";
+
+    	flash1: flash1@90000000{
+		compatible = "st,stm32-ospi-nor";
+		reg = <0x90000000 DT_SIZE_M(64)>; /* 512 Mbits */
+		size = <DT_SIZE_M(64)>;
+		spi-bus-width = <OSPI_QUAD_MODE>;
+		data-rate = <OSPI_STR_TRANSFER>;
+		ospi-max-frequency = <50000000>;
+		writeoc = "PP_1_4_4";
+		four-byte-opcodes;
+		status = "okay";
+    	};
+};
+/* spi end */
+
+&flash0 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+		boot_partition: partition@0 {
+			label = "mcuboot";
+			reg = <0x00000000 DT_SIZE_K(128)>;
+		};
+		slot0_partition: partition@20000 {
+			label = "image-0";
+			reg = <0x00020000 DT_SIZE_K(768)>;
+		};
+	};
+};
+
+&flash1 {
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+	
+		slot1_partition: partition@20000 {
+			label = "image-1";
+			reg = <0x00020000 DT_SIZE_K(768)>; /* Secondary External firmware */
+		};
+	
+		storage_partition: partition@E0000 {
+			label = "storage";
+			reg = <0x000E0000 0x4000000>; /* XMB for storage */
+		};
+	};  
+};
+
+/*dmas start*/
+&dma1 {
+	status = "okay";
+};
+
+&dma2 {
+	status = "okay";
+};
+
+&dmamux1 {
+	status = "okay";
+};
+/*dmas end*/
+
+/*timers start*/
+&timers2 {
+	status = "okay";
+	st,prescaler = <0>;
+	// serving timers2 encoder mode (ch1 & ch2)
+	tim2enc_mode: tim2enc_mode {
+		status = "okay";
+		compatible = "st,stm32-qdec";
+		pinctrl-0 = <&tim2_ch1_pa5 &tim2_ch2_pb3>;
+		pinctrl-names = "default";
+		st,counts-per-revolution = <1>;
+	};
+};
+
+&timers5 {
+	status = "okay";
+	st,prescaler = <0>;
+	// serving timers5 encoder mode (ch1 & ch2)
+	tim5enc_mode: tim5enc_mode {
+		status = "okay";
+		compatible = "st,stm32-qdec";
+		pinctrl-0 = <&tim5_ch1_pa0 &tim5_ch2_pa1>;
+		pinctrl-names = "default";
+		st,counts-per-revolution = <1>;
+	};
+};
+
+&timers23 {
+	status = "okay";
+	st,prescaler = <0>;
+	// serving timers23 encoder mode (ch1 & ch2)
+	tim23enc_mode: tim23enc_mode {
+		status = "okay";
+		compatible = "st,stm32-qdec";
+		pinctrl-0 = <&tim23_ch1_pf0 &tim23_ch2_pf1>;
+		pinctrl-names = "default";
+		st,counts-per-revolution = <1>;
+	};
+};
+
+&timers24 {
+	status = "okay";
+	st,prescaler = <0>;
+	// serving timers24 encoder mode (ch1 & ch2)
+	tim24enc_mode: tim24enc_mode {
+		status = "okay";
+		compatible = "st,stm32-qdec";
+		pinctrl-0 = <&tim24_ch1_pf11 &tim24_ch2_pf12>;
+		pinctrl-names = "default";
+		st,counts-per-revolution = <1>;
+	};
+};
+/*timers end*/
+
+/*rtc start*/
+&rtc {
+	status = "okay";
+	clocks = <&rcc STM32_CLOCK_BUS_APB4 0x00010000>,
+		 <&rcc STM32_SRC_LSI RTC_SEL(2)>;
+};
+
+&backup_sram {
+	status = "okay";
+};
+/*rtc end*/
+
+&iwdg1 {
+	status = "okay";
+};
+
+&fdcan1 {
+	pinctrl-0 = <&fdcan1_rx_pd0 &fdcan1_tx_pd1>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>,
+	         <&rcc STM32_SRC_HSE FDCAN_SEL(0)>;
+	status = "okay";
+
+	bitrate = <500000>;
+	bitrate-data = <500000>;
+	sample-point = <750>;
+	sample-point-data = <750>;
+	clk-divider = <1>;
+};
+
+&fdcan2 {
+	pinctrl-0 = <&fdcan2_rx_pb5 &fdcan2_tx_pb6>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>,
+	         <&rcc STM32_SRC_HSE FDCAN_SEL(0)>;
+	status = "okay";
+
+	bitrate = <500000>;
+	bitrate-data = <500000>;
+	sample-point = <750>;
+	sample-point-data = <750>;
+	clk-divider = <1>;
+};
+
+&fdcan3 {
+	pinctrl-0 = <&fdcan3_rx_pg10 &fdcan3_tx_pg9>;
+	pinctrl-names = "default";
+	clocks = <&rcc STM32_CLOCK_BUS_APB1_2 0x00000100>,
+	         <&rcc STM32_SRC_HSE FDCAN_SEL(0)>;
+	status = "okay";
+
+	bitrate = <1000000>;
+	bitrate-data = <1000000>;
+	sample-point = <750>;
+	sample-point-data = <750>;
+	clk-divider = <1>;
+};

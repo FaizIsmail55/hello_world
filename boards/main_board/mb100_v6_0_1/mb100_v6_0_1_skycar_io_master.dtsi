@@ -1,0 +1,371 @@
+/*
+ *        Copyright (c) PINGSPACE SDN BHD
+ *        Author: Iskandar Putra <mohd.iskandar.putra@pingspace.co>
+ *        SPDX-License-Identifier: Apache-2.0
+ *        list of the IO used in skycar
+ */
+
+/ {
+	inputs_outputs: io {
+		
+		io_expander_inputs {
+			compatible = "gpio-keys";
+			panel_switch_offline: in_io0_26 {
+				gpios = <&mcp23017b 0 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO0 - GPA0 - PANEL BTN OFFLINE";
+			};
+
+			panel_switch_online: in_io1_26 {
+				gpios = <&mcp23017b 1 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO1 - GPA1 - PANEL BTN ONLINE";
+			};
+
+			panel_switch_wex_up: in_io2_26 {
+				gpios = <&mcp23017b 2 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO2 - GPA2 - PANEL BTN WEX UP";
+			};
+
+			panel_switch_wex_down: in_io3_26 {
+				gpios = <&mcp23017b 3 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO3 - GPA3 - PANEL BTN WEX DOWN";
+			};
+
+			panel_switch_winch_up: in_io4_26 {
+				gpios = <&mcp23017b 4 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO4 - GPA4 - PANEL BTN WINCH UP";
+			};
+
+			panel_switch_winch_down: in_io5_26 {
+				gpios = <&mcp23017b 5 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO5 - GPA5 - PANEL BTN WINCH DOWN";
+			};
+
+			panel_switch_gripper_open: in_io6_26 {
+				gpios = <&mcp23017b 6 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO6 - GPA6 - PANEL BTN GRIPPER OPEN";
+			};
+
+			panel_switch_gripper_close: in_io7_26 {
+				gpios = <&mcp23017b 7 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP B IO7 - GPA7 - PANEL BTN GRIPPER CLOSE";
+			};
+		};
+
+		io_expander_outputs {
+			compatible = "gpio-leds";
+			led_strip_red_a: out_io0_27 {
+				gpios = <&mcp23017a 0 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO0 - GPA0 - LED STRIP RED A";
+			};
+
+			led_strip_green_a: out_io1_27 {
+				gpios = <&mcp23017a 1 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO1 - GPA1 - LED STRIP GREEN A";
+			};
+
+			led_strip_blue_a: out_io2_27 {
+				gpios = <&mcp23017a 2 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO2 - GPA2 - LED STRIP BLUE A";
+			};
+
+			mux12_io_oe: out_io3_27 {
+				gpios = <&mcp23017a 3 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO3 - GPA3 - MUX1,2 1OE AND 2OE";
+			};
+
+			mux1_io_s0: out_io4_27 {
+				gpios = <&mcp23017a 4 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO4 - GPA4 - MUX1 S0";
+			};
+
+			mux1_io_s1: out_io5_27 {
+				gpios = <&mcp23017a 5 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO5 - GPA5 - MUX1 S1";
+			};
+
+			mux2_io_s0: out_io6_27 {
+				gpios = <&mcp23017a 6 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO6 - GPA6 - MUX2 S0";
+			};
+
+			mux2_io_s1: out_io7_27 {
+				gpios = <&mcp23017a 7 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO7 - GPA7 - MUX2 S1";
+			};
+
+			mux34_io_oe: out_io8_27 {
+				gpios = <&mcp23017a 8 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO8 - GPB0 - MUX3,4 1OE AND 2OE";
+			};
+
+			mux3_io_s0: out_io9_27 {
+				gpios = <&mcp23017a 9 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO9 - GPB1 - MUX3 S0";
+			};
+
+			mux3_io_s1: out_io10_27 {
+				gpios = <&mcp23017a 10 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO10 - GPB2 - MUX3 S1";
+			};
+
+			mux4_io_s0: out_io11_27 {
+				gpios = <&mcp23017a 11 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO11 - GPB3 -  MUX4 S0";
+			};
+
+			mux4_io_s1: out_io12_27 {
+				gpios = <&mcp23017a 12 GPIO_ACTIVE_HIGH>;
+				label = "IO EXP A IO12 - GPB4 - MUX4 S1";
+			};
+		};
+
+		/*Winching Motor driver controls*/
+		winching_module {
+			winching_module_sensors {
+				compatible = "gpio-keys";
+				platform_limit_right_a: platform_limit_right_a_sensor {
+					gpios = <&gpiog 7 GPIO_ACTIVE_HIGH>; /*PG7*/
+					label = "SENSOR_PG7";
+				};
+
+				platform_limit_left_a: platform_limit_left_a_sensor {
+					gpios = <&gpiog 6 GPIO_ACTIVE_HIGH>; /*PG6*/
+					label = "SENSOR_PG6";
+				};
+
+				platform_detect_a: platform_detect_a_sensor {
+					gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>; /*PE14*/
+					label = "SENSOR_PC13";
+				};
+
+				bin_detect_a: bin_detect_a_sensor {
+					gpios = <&gpiog 5 GPIO_ACTIVE_HIGH>; /*PG5*/
+					label = "SENSOR_PG5";
+				};
+			};
+		};
+
+		/* Wheel exchange module */
+		wheel_exchange_module {
+			wheel_exchange_module_sensors {
+				compatible = "gpio-keys";
+				wex_x_a: wheel_exchange_x_a_sensor {
+					gpios = <&gpiod 2 GPIO_ACTIVE_LOW>; /*PD2*/
+					label = "SENSOR_PD2";
+				};
+
+				wex_y_a: wheel_exchange_y_a_sensor {
+					gpios = <&gpiod 3 GPIO_ACTIVE_LOW>; /*PD3*/
+					label = "SENSOR_PD3";
+				};
+
+				wex_xy_check_a: wheel_exchange_xy_check_sensor {
+					gpios = <&gpiod 4 GPIO_ACTIVE_LOW>; /*PD4*/
+					label = "SENSOR_PD4";
+				};
+
+				wex_xy_a: wheel_exchange_xy_sensor {
+					gpios = <&gpiod 6 GPIO_ACTIVE_LOW>; /*PD6*/
+					label = "SENSOR_PD6";
+				};
+
+				wex_x_b: wheel_exchange_x_b_sensor {
+					gpios = <&gpiod 5 GPIO_ACTIVE_LOW>; /*PD5*/
+					label = "SENSOR_PD5";
+				};
+
+				wex_y_b: wheel_exchange_y_b_sensor {
+					gpios = <&gpiog 11 GPIO_ACTIVE_LOW>; /*PG11*/
+					label = "SENSOR_PG11";
+				};
+
+				wex_xy_check_b: wheel_exchange_xy_check_b_sensor {
+					gpios = <&gpiog 12 GPIO_ACTIVE_LOW>; /*PG12*/
+					label = "SENSOR_PG12";
+				};
+
+				wex_xy_b: wheel_exchange_xy_b_sensor {
+					gpios = <&gpiod 7 GPIO_ACTIVE_LOW>; /*PD7*/
+					label = "SENSOR_PD7";
+				};
+			};
+		};
+
+		/*Wheel Motor sensors*/
+		wheel_motor_module {
+			wheel_motor_sensors {
+				compatible = "gpio-keys";
+				left_rail_sensor: left_rail_sensor {
+					gpios = <&gpiof 4 GPIO_ACTIVE_HIGH>; /*PF4*/
+					label = "SENSOR_PF4";
+				};
+
+				right_rail_sensor: right_rail_sensor {
+					gpios = <&gpiof 5 GPIO_ACTIVE_HIGH>; /*PF5*/
+					label = "SENSOR_PF5";
+				};
+
+				front_rail_sensor: front_rail_sensor {
+					gpios = <&gpiof 2 GPIO_ACTIVE_HIGH>; /*PF2*/
+					label = "SENSOR_PF2";
+				};
+
+				back_rail_sensor: back_rail_sensor {
+					gpios = <&gpiof 3 GPIO_ACTIVE_HIGH>; /*PF3*/
+					label = "SENSOR_PF3";
+				};
+			};
+		};
+
+		/* Power module */
+		power_module {
+			power_module_control {
+				compatible = "gpio-keys";
+				pms_fan_ctrl: pms_fan_control {
+					gpios = <&gpioa 4 GPIO_ACTIVE_HIGH>; /*PA4*/
+					label = "PMS_FAN_CTRL_PA4";
+				};
+
+				sens_pwr_ctrl: sens_power_control {
+					gpios = <&gpioa 6 GPIO_ACTIVE_HIGH>; /*PA6*/
+					label = "SENS_POW_PA6";
+				};
+
+				wch_pwr_ctrl: winch_power_control {
+					gpios = <&gpioc 5 GPIO_ACTIVE_HIGH>; /*PC5*/
+					label = "WINCH_POW_CTRL_PC5";
+				};
+
+				wch_rst_a_ctrl: winch_reset_a_control {
+					gpios = <&gpioe 9 GPIO_ACTIVE_HIGH>; /*PE9*/
+					label = "WINCH_RESET_A_CTRL_PE9";
+				};
+
+				recom_pwr_ctrl: recom_power_control {
+					gpios = <&gpiob 0 GPIO_ACTIVE_HIGH>; /*PB0*/
+					label = "REC_POW_CTRL_PB0";
+				};
+
+				relay_ctrl: relay_control {
+					gpios = <&gpiob 1 GPIO_ACTIVE_HIGH>; /*PB1*/
+					label = "RELAY_POW_CTRL_PB1";
+				};
+
+				wch_mtr_a_pwr_ctrl: winch_motor_a_power_control {
+					gpios = <&gpiob 2 GPIO_ACTIVE_HIGH>; /*PB2*/
+					label = "WINCH_MOTOR_A_POW_CTRL_PB2";
+				};
+
+				wex_mtr_pwr_ctrl: wex_motor_power_control {
+					gpios = <&gpiof 15 GPIO_ACTIVE_HIGH>; /*PF15*/
+					label = "WEX_MOTOR_POW_CTRL_PF15";
+				};
+
+				mcb_mtr_x_pwr_ctrl: mcube_motor_x_power_control {
+					gpios = <&gpiof 13 GPIO_ACTIVE_HIGH>; /*PF13*/
+					label = "MCUBE_MOTOR_X_POW_CTRL_PF13";
+				};
+
+				mcb_mtr_y_pwr_ctrl: mcube_motor_y_power_control {
+					gpios = <&gpiof 14 GPIO_ACTIVE_HIGH>; /*PF14*/
+					label = "MCUBE_MOTOR_X_POW_CTRL_PF14";
+				};
+			};
+
+			power_module_feedback {
+				compatible = "gpio-keys";
+				wch_rst_a_fb: winch_reset_a_feedback {
+					gpios = <&gpiof 6 GPIO_ACTIVE_HIGH>; /*PF6*/
+					label = "WINCH_RESET_A_FEEDBACK_PF6";
+				};
+
+				wch_mtr_a_pwr_fb: winch_motor_a_power_feedback {
+					gpios = <&gpiof 9 GPIO_ACTIVE_LOW>; /*PF9*/
+					label = "WINCH_MOTOR_A_POWER_FEEDBACK_PF9";
+				};
+
+				wex_mtr_a_pwr_fb: wex_motor_a_power_feedback {
+					gpios = <&gpiof 8 GPIO_ACTIVE_LOW>; /*PF8*/
+					label = "WEX_MOTOR_A_POWER_FEEDBACK_PF8";
+				};
+
+				mcb_mtr_x_a_pwr_fb: mcube_motor_x_a_power_feedback {
+					gpios = <&gpioc 10 GPIO_ACTIVE_LOW>; /*PC10*/
+					label = "MCUBE_MOTOR_X_A_POWER_FEEDBACK_PC10";
+				};
+
+				mcb_mtr_y_a_pwr_fb: mcube_motor_y_a_power_feedback {
+					gpios = <&gpioa 15 GPIO_ACTIVE_LOW>; /*PA15*/
+					label = "MCUBE_MOTOR_Y_A_POWER_FEEDBACK_PA15";
+				};
+
+				pwr_a_uv_fb: power_a_under_voltage_feedback {
+					gpios = <&gpioe 15 GPIO_ACTIVE_LOW>; /*PE15*/
+					label = "POWER_A_UNDER_VOLTAGE_FEEDBACK_PE15";
+				};
+
+				pwr_a_oc_fb: power_a_over_current_feedback {
+					gpios = <&gpiog 13 GPIO_ACTIVE_LOW>; /*PG13*/
+					label = "POWER_A_OVER_CURRENT_FEEDBACK_PG13";
+				};
+			};
+		};
+
+		/* System state module */
+		system_state_module {
+			system_state_controls {
+				compatible = "gpio-keys";
+				imu_reset: imu_reset {
+					gpios = <&gpioa 7 GPIO_ACTIVE_HIGH>; /*PA7*/
+					label = "IMU_RESET_PA7";
+				};
+
+				xbee_manual_reset: xbee_manual_reset {
+					gpios = <&gpioe 13 GPIO_ACTIVE_HIGH>; /*PE13*/
+					label = "XBEE_MANUAL_RESET_PE13";
+				};
+			};
+
+			system_state_sensors {
+				compatible = "gpio-keys";
+				estop: emergency_stop_sensor {
+					gpios = <&gpioc 1 GPIO_ACTIVE_LOW>; /*PC1*/
+					label = "SENSOR_PC1";
+				};
+
+				imu_st: imu_status {
+					gpios = <&gpioa 9 GPIO_ACTIVE_LOW>; /*PA9*/
+					label = "IMU_STATUS_PA9";
+				};
+
+				ir_recv_a: aux_ir_receive {
+					gpios = <&gpioc 11 GPIO_ACTIVE_HIGH>; /*PC11*/
+					label = "AUX_IR_RECEIVE_PC11";
+				};
+
+				ir_trans_a: ir_transmit {
+					gpios = <&gpioe 5 GPIO_ACTIVE_HIGH>; /*PE5*/
+					label = "IR_TRANSMIT_PE5";
+				};
+
+				panel_switch_man_ops: manual_operation_switch {
+					gpios = <&gpioc 12 GPIO_ACTIVE_HIGH>; /*PC12*/
+					label = "PANEL_SWITCH_MANUAL_OPERATION_PC12";
+				};
+			};
+
+			leds {
+				compatible = "gpio-leds";
+				green_led: led_0 {
+					gpios = <&gpiob 4 GPIO_ACTIVE_HIGH>; /*PB4*/
+					label = "User LD1";
+				};
+
+				yellow_led: led_1 {
+					gpios = <&gpiog 15 GPIO_ACTIVE_HIGH>; /*PG15*/
+					label = "User LD2";
+				};
+			};
+		};
+	};
+};

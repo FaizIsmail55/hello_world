@@ -1,0 +1,57 @@
+/*
+ *        Copyright (c) PINGSPACE SDN BHD
+ *        Author: Iskandar Putra <mohd.iskandar.putra@pingspace.co>
+ *        SPDX-License-Identifier: Apache-2.0
+ *        DTS FOR CUSTOM V2.0.1 BOARD (BSP)
+ */
+
+#include "mb100_v6_0_1_peripheral.dtsi"
+#include "mb100_v6_0_1_skycar_io_master.dtsi"
+
+
+/**** New node additions to root ****/
+/ {
+	aliases {
+		uart-a = &usart1; //esp32
+		uart-b = &usart2; //esp32 H7 Flash
+		uart-c = &usart10;
+		uart-int-a = &usart6; //Rail scanner
+		uart-int-b = &uart7; //Scanner A
+		uart-int-c = &uart9; //Scanner B
+		encoder-a = &tim2enc_mode;
+		encoder-b = &tim5enc_mode;
+		encoder-c = &tim23enc_mode;
+		encoder-d = &tim24enc_mode;
+		// pwm-ir = &pwm_pulse_ctl;
+		eeprom-0 = &eeprom_000;
+		i2c-2 = &i2c2;
+		rtc = &rtc;
+		can-a = &fdcan1;
+		can-b = &fdcan2;
+		can-c = &fdcan3;
+		io-expander-a = &mcp23017a;
+		io-expander-b = &mcp23017b;
+		spi-flash0 = &flash1;
+	};
+	chosen {
+		zephyr,console = &usart3; //logging
+		zephyr,shell-uart = &usart3;
+		zephyr,itcm = &itcm;
+		zephyr,dtcm = &dtcm;
+	};
+
+};
+
+/ {
+	dtcm: memory@20000000 {
+		compatible = "zephyr,memory-region", "arm,dtcm";
+		reg = <0x20000000 DT_SIZE_K(128)>;
+		zephyr,memory-region = "DTCM";
+	};
+
+	itcm: memory@0 {
+		compatible = "zephyr,memory-region", "arm,itcm";
+		reg = <0x00000000 DT_SIZE_K(64)>;
+		zephyr,memory-region = "ITCM";
+	};
+};

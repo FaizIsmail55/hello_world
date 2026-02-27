@@ -1,0 +1,93 @@
+/*
+ * Copyright (c) 2020 Alexander Kozhinov <ak.alexander.kozhinov@gmail.com>
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/dts-v1/;
+#include <st/h7/stm32h723Xg.dtsi>
+#include <st/h7/stm32h723zgtx-pinctrl.dtsi>
+#include "arduino_r3_connector.dtsi"
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+
+/*
+ * WARNING:
+ * JP6 and SB72 must be ON when using Ethernet.
+ */
+
+/ {
+	model = "STMicroelectronics STM32H723ZG-NUCLEO board";
+	compatible = "st,stm32h723zg-nucleo";
+
+	chosen {
+		zephyr,console = &usart3;
+		zephyr,shell-uart = &usart3;
+		zephyr,sram = &sram0;
+		zephyr,flash = &flash0;
+	};
+
+	leds: leds {
+		compatible = "gpio-leds";
+		green_led: led_0 {
+			gpios = <&gpiob 0 GPIO_ACTIVE_HIGH>;
+			label = "User LD1";
+		};
+		yellow_led: led_1 {
+			gpios = <&gpioe 1 GPIO_ACTIVE_HIGH>;
+			label = "User LD2";
+		};
+		red_led: led_2 {
+			gpios = <&gpiob 14 GPIO_ACTIVE_HIGH>;
+			label = "User LD3";
+		};
+	};
+
+
+	gpio_keys {
+		compatible = "gpio-keys";
+		user_button: button_0 {
+			label = "User";
+			gpios = <&gpioc 13 GPIO_ACTIVE_HIGH>;
+			zephyr,code = <INPUT_KEY_0>;
+		};
+	};
+
+	
+};
+
+&clk_hse {
+	clock-frequency = <DT_FREQ_M(25)>; /* HSE 25MHz clock */
+	status = "okay";
+};
+
+&clk_lsi {
+	status = "okay";
+};
+
+&pll {
+	div-m = <4>;
+	mul-n = <88>;
+	div-p = <1>;
+	div-q = <5>;
+	div-r = <2>;
+	clocks = <&clk_hse>;
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(550)>;
+	d1cpre = <1>;
+	hpre = <2>;    /* HCLK: 275   MHz */
+	d1ppre = <2>;  /* APB1: 137.5 MHz */
+	d2ppre1 = <2>; /* APB2: 137.5 MHz */
+	d2ppre2 = <2>; /* APB3: 137.5 MHz */
+	d3ppre = <2>;  /* APB4: 137.5 MHz */
+};
+
+&usart3 {
+	pinctrl-0 = <&usart3_tx_pd8 &usart3_rx_pd9>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
